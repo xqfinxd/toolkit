@@ -1,0 +1,2 @@
+
+#define _DASSERT "FOO_STRING"
