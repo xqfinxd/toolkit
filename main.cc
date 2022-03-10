@@ -2,23 +2,29 @@
 #include <vector>
 #include <stdlib.h>
 #include <string.h>
+#include <functional>
 
-#include "vulkan/vulkan.h"
+#include "lua.hpp"
 
-int main(int argc, char** argv) {
-    VkInstance instance;
-    vkCreateInstance(nullptr, nullptr, &instance);
-    const char* str = "-100a";
+struct Data
+{
+    int x, y, z;
+    char c;
+};
 
-    char* pos = nullptr;
-    int num = strtol(str, &pos, 10);
-    
-    std::cout << std::addressof(str) << std::endl;
-    std::cout << std::addressof(pos) << std::endl;
-    #ifdef _DASSERT
-    std::cout << strlen(pos) << _DASSERT << std::endl;
-    #endif
-	std::cout << num << std::endl;
+template <typename T>
+void bind_class(lua_State* L)
+{
+	T* userdata = reinterpret_cast<T*>(lua_newuserdata(L, sizeof(T)));
+	new(userdata) T();
+}
+
+int main(int argc, char** argv)
+{
+	std::vector<int> d;
+	lua_State* L = luaL_newstate();
+	luaL_openlibs(L);
+	bind_class<Data>(L);
 
 	return 0;
 }
